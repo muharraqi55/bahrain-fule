@@ -138,7 +138,7 @@ footer{text-align:center;color:var(--mut);font-size:12px;margin-top:18px;line-he
   <div class="card">
     <div class="grid">
       <div class="full"><label data-i18n="car"></label><div class="in"><input id="car" class="txt" type="text" list="cars" maxlength="30" data-ph="carPh"><datalist id="cars"></datalist></div></div>
-      <div><label data-i18n="price"></label><div class="in"><input id="price" type="number" step="0.001" inputmode="decimal"><span>BHD</span></div></div>
+      <div><label data-i18n="price"></label><div class="in"><input id="price" type="number" step="0.001" inputmode="decimal"><span id="uPrice">BHD</span></div></div>
       <div><label><span data-i18n="tank"></span><button type="button" class="q" id="qbtn" aria-label="help">?</button></label><div class="in"><input id="tank" type="number" value="60" inputmode="decimal"><span data-i18n="L"></span></div></div>
       <div class="full help" id="help" hidden><b data-i18n="helpH"></b><ol id="helpL"></ol></div>
       <div class="full"><label data-i18n="dist"></label><div class="in"><input id="dist" type="number" value="166" inputmode="decimal"><span data-i18n="km"></span></div></div>
@@ -229,7 +229,7 @@ function toast(m){const e=$('toast');e.textContent=m;e.classList.add('on');clear
 /* ============ الترجمة ============ */
 const I={
 ar:{title:'حاسبة البنزين',sub:'مملكة البحرين',fuelType:'نوع البنزين',g91:'جيد',g95:'ممتاز',g98:'سوبر',fils:'فلس',
- car:'اسم السيارة',carPh:'مثال: كامري V6',price:'سعر اللتر – يدوي (بالدينار البحريني)',tank:'سعة الخزان',L:'لتر',dist:'المسافة التي قطعتها',km:'كم',
+ car:'اسم السيارة',carPh:'مثال: كامري V6',price:'سعر اللتر – يدوي',tank:'سعة الخزان',L:'لتر',dist:'المسافة التي قطعتها',km:'كم',
  before:'المؤشر قبل',after:'المؤشر بعد',filled:'اختياري: كم لتر عبّأت بعد المشوار؟ (للدقة)',
  helpH:'من أين أعرف سعة الخزان؟',
  help:['<b>كتيّب السيارة:</b> قسم «المواصفات» ← «سعة خزان الوقود». إن كانت بالجالون فالجالون الأمريكي = 3.785 لتر.','<b>موقع الشركة أو الوكالة:</b> ابحث باسم السيارة وسنة الموديل مع عبارة fuel tank capacity.','<b>الوكالة أو الورشة:</b> اسألهم وأعطهم رقم الهيكل (VIN) من استمارة السيارة.','<b>بدون كتيّب:</b> عبّئ الخزان لآخره، ثم قد حتى يصل المؤشر للنصف، ثم عبّئ لآخره مرة أخرى. اللترات التي دخلت × 2 = السعة تقريباً.'],
@@ -242,9 +242,10 @@ ar:{title:'حاسبة البنزين',sub:'مملكة البحرين',fuelType:'
  src:'المصدر',srcFail:'تعذّرت قراءة prices.json، استُخدمت بيانات مدمجة محدودة',upd:'آخر تحديث للبيانات',manualFor:'سعر يدوي محفوظ في متصفحك لبنزين',resetOfficial:'إعادة السعر الرسمي',
  foot:'الحسابات تقديرية. السجل محفوظ في متصفح هذا الجهاز فقط.',grpG:'الخليج',grpW:'العالم',curApprox:'سعر الصرف تقريبي',
  rTitle:'تقرير تكلفة الوقود',rTrip:'تفاصيل المشوار',rFuel:'بنزين',rPer:'للتر',rEq:'ما يعادل بالدينار البحريني',rGauge:'مستوى الخزان بعد المشوار',
- rDisc:'الحسابات تقديرية وتعتمد على المدخلات. أسعار البحرين من لجنة تحديد ومراقبة أسعار الوقود، وأسعار دول الخليج من مصادر منشورة، وأسعار الصرف بتاريخ تحديث البيانات وبعضها تقريبي.'},
+ rDisc:'الحسابات تقديرية وتعتمد على المدخلات. أسعار البحرين من لجنة تحديد ومراقبة أسعار الوقود، وأسعار دول الخليج من مصادر منشورة، وأسعار الصرف بتاريخ تحديث البيانات وبعضها تقريبي.',
+ trendUp:'ارتفاع',trendDown:'انخفاض',trendFlat:'ثبات'},
 en:{title:'Fuel Calculator',sub:'Kingdom of Bahrain',fuelType:'Fuel type',g91:'Jayyid',g95:'Mumtaz',g98:'Super',fils:'fils',
- car:'Car name',carPh:'e.g. Camry V6',price:'Price per litre – manual (in BHD)',tank:'Tank capacity',L:'L',dist:'Distance driven',km:'km',
+ car:'Car name',carPh:'e.g. Camry V6',price:'Manual price per litre',tank:'Tank capacity',L:'L',dist:'Distance driven',km:'km',
  before:'Gauge before',after:'Gauge after',filled:'Optional: litres refilled after the trip (for accuracy)',
  helpH:'Where do I find my tank capacity?',
  help:['<b>Owner’s manual:</b> “Specifications” section → “Fuel tank capacity”. If it is in gallons, 1 US gallon = 3.785 L.','<b>Manufacturer or dealer website:</b> search the car name and model year with “fuel tank capacity”.','<b>Dealer or workshop:</b> ask them, giving the VIN from your registration card.','<b>No manual:</b> fill the tank to the top, drive until the gauge reaches half, then fill to the top again. Litres added × 2 ≈ capacity.'],
@@ -257,7 +258,8 @@ en:{title:'Fuel Calculator',sub:'Kingdom of Bahrain',fuelType:'Fuel type',g91:'J
  src:'Source',srcFail:'Could not read prices.json, limited built-in data used',upd:'Data updated',manualFor:'Manual price saved in your browser for',resetOfficial:'Restore official price',
  foot:'Estimates only. The log is stored in this device’s browser only.',grpG:'Gulf',grpW:'World',curApprox:'Exchange rate is approximate',
  rTitle:'Fuel Cost Report',rTrip:'Trip details',rFuel:'Petrol',rPer:'per litre',rEq:'Equivalent in Bahraini dinar',rGauge:'Tank level after the trip',
- rDisc:'Estimates based on the inputs. Bahrain prices come from the Fuel Pricing Committee, other Gulf prices from published sources, exchange rates as of the data date and some are approximate.'}
+ rDisc:'Estimates based on the inputs. Bahrain prices come from the Fuel Pricing Committee, other Gulf prices from published sources, exchange rates as of the data date and some are approximate.',
+ trendUp:'Up',trendDown:'Down',trendFlat:'Flat'}
 };
 let lang=LS.get('lang','ar'),cur=LS.get('cur','BHD');
 const t=k=>(I[lang][k]!=null?I[lang][k]:I.ar[k]!=null?I.ar[k]:k);
@@ -293,12 +295,22 @@ FUELS.forEach(f=>{
   f.el=b;f.nEl=b.querySelector('.n');f.pEl=b.querySelector('.p');$('fuels').appendChild(b);
 });
 function cardTxt(v){return cur==='BHD'?Math.round(v*1000)+' '+t('fils'):cc(v)+' '+unit(cur)}
+function trend(g){
+  const H=D.bahrain.history;
+  if(H.length<2)return{icon:'',cls:''};
+  const last=H[H.length-1]['p'+g],prev=H[H.length-2]['p'+g];
+  if(last==null||prev==null)return{icon:'',cls:''};
+  if(last>prev)return{icon:'▲',cls:'trend-up'};
+  if(last<prev)return{icon:'▼',cls:'trend-down'};
+  return{icon:'=',cls:'trend-flat'};
+}
 function renderCards(){
   const m=getManual();
   FUELS.forEach(f=>{
     const v=m[f.g]!=null?m[f.g]:offP(f.g);
+    const tr=trend(f.g);
     f.nEl.textContent=t('g'+f.g);
-    f.pEl.textContent=cardTxt(v)+(m[f.g]!=null?' ✎':'');
+    f.pEl.innerHTML=cardTxt(v)+(m[f.g]!=null?' ✎':'')+' <span class="trend '+tr.cls+'">'+tr.icon+'</span>';
   });
 }
 function renderSrc(){
@@ -342,8 +354,16 @@ function buildCurrencySelect(){
 $('cur').onchange=()=>{
   cur=$('cur').value;LS.set('cur',cur);
   const i=cinfo(cur);$('cnote').textContent=i&&i.kind==='approx'?t('curApprox'):'';
+  updatePriceLabel();
   renderCards();renderChart();renderGcc();renderLog();calc();
 };
+
+/* ============ تحديث مسمى سعر اللتر ============ */
+function updatePriceLabel(){
+  const el=document.querySelector('[data-i18n="price"]');
+  if(el)el.textContent=t('price')+' ('+unit(cur)+')';
+  const u=$('uPrice');if(u)u.textContent=unit(cur);
+}
 
 /* ============ المؤشران ============ */
 function link(nid,rid){
@@ -589,7 +609,7 @@ function applyLang(){
   $('helpL').innerHTML=t('help').map(x=>'<li>'+x+'</li>').join('');
   $('lang').textContent=lang==='ar'?'EN':'ع';
   $('updL').textContent=t('upd')+': '+D.updated;
-  buildCurrencySelect();renderCards();renderSrc();renderChart();renderGcc();renderLog();calc();
+  buildCurrencySelect();updatePriceLabel();renderCards();renderSrc();renderChart();renderGcc();renderLog();calc();
 }
 $('lang').onclick=()=>{lang=lang==='ar'?'en':'ar';LS.set('lang',lang);applyLang()};
 
