@@ -20,11 +20,11 @@
   },
   "gcc": [
     { "id": "BH", "ar": "البحرين", "en": "Bahrain", "cur": "BHD", "date": "2026-11-02", "p91": 0.235, "p95": 0.277, "p98": 0.410 },
-    { "id": "SA", "ar": "السعودية", "en": "Saudi Arabia", "cur": "SAR", "date": "2026-11", "p91": 2.18, "p95": 2.33, "p98": null },
+    { "id": "SA", "ar": "السعودية", "en": "Saudi Arabia", "cur": "SAR", "date": "2026-11-01", "p91": 2.18, "p95": 2.33, "p98": 5.33 },
     { "id": "AE", "ar": "الإمارات", "en": "UAE", "cur": "AED", "date": "2026-11-01", "p91": 3.97, "p95": 4.04, "p98": 4.16 },
-    { "id": "QA", "ar": "قطر", "en": "Qatar", "cur": "QAR", "date": "2026-11", "p91": 1.95, "p95": 2.10, "p98": null },
-    { "id": "OM", "ar": "عُمان", "en": "Oman", "cur": "OMR", "date": "2026-11", "p91": 0.229, "p95": 0.239, "p98": null },
-    { "id": "KW", "ar": "الكويت", "en": "Kuwait", "cur": "KWD", "date": "2026-11", "p91": 0.085, "p95": 0.105, "p98": 0.275 }
+    { "id": "QA", "ar": "قطر", "en": "Qatar", "cur": "QAR", "date": "2026-11-01", "p91": 1.95, "p95": 2.10, "p98": null },
+    { "id": "OM", "ar": "عُمان", "en": "Oman", "cur": "OMR", "date": "2026-11-01", "p91": 0.229, "p95": 0.239, "p98": 0.399 },
+    { "id": "KW", "ar": "الكويت", "en": "Kuwait", "cur": "KWD", "date": "2026-11-01", "p91": 0.085, "p95": 0.105, "p98": 0.275 }
   ],
   "currencies": [
     { "code": "BHD", "ar": "دينار بحريني", "en": "Bahraini dinar", "sym_ar": "د.ب", "usd_per_unit": 2.659574, "group": "gulf", "kind": "peg" },
@@ -46,17 +46,19 @@
     { "code": "AUD", "ar": "دولار أسترالي", "en": "Australian dollar", "sym_ar": "A$", "usd_per_unit": 0.67768, "group": "world", "kind": "market" }
   ],
   "notes": [
-    { "ar": "البحرين: أسعار لجنة تحديد ومراقبة أسعار الوقود (منشورة في GDN وNews of Bahrain وTradeArabia والأيام). السعر كان ثابتاً 140/200/235 فلس من 8 يناير 2018 حتى 30 ديسمبر 2025 (تاريخ الأسعار في thefuelprice.com).",
-      "en": "Bahrain: official Fuel Pricing Committee announcements (GDN, News of Bahrain, TradeArabia, Al-Ayam). Prices were unchanged at 140/200/235 fils from 8 Jan 2018 to 30 Dec 2025 (thefuelprice.com price history)." },
-    { "ar": "لم أجد إعلاناً منفصلاً لشهر يناير 2026، فيُعرض سعر 30 ديسمبر 2025 حتى 2 فبراير 2026. كذلك لا توجد نقطة لمارس لأن إعلان أبريل ذكر أن أسعار 2 فبراير بقيت سارية.",
-      "en": "No separate January 2026 announcement was found, so the 30 Dec 2025 price is shown until 2 Feb 2026. There is no March point because the April announcement said the 2 Feb rates stayed in effect." },
-    { "ar": "الإمارات: أسعار نوفمبر 2026 شاملة الضريبة (أرقام، الطاقة). موقع thefuelprice يذكر 4.14 لبنزين 98 بدل 4.16.",
-      "en": "UAE: November 2026 prices including VAT (Argaam, Attaqa). thefuelprice.com lists 4.14 for 98 instead of 4.16." },
-    { "ar": "السعودية: أسعار 91 و95 من أسعار أرامكو. تركت بنزين 98 فارغاً لأن المصادر تعارضت (5.09 و5.33).",
-      "en": "Saudi Arabia: 91 and 95 follow Aramco prices. 98 is left empty because sources conflict (5.09 vs 5.33)." },
-    { "ar": "قطر: أسعار قطر للطاقة لنوفمبر 2026. عُمان والكويت: من مواقع مقارنة (ksaexpats وmiqatona) وتغريدة الاقتصادية لنوفمبر، وهي أقل توثيقاً من البحرين والإمارات وقطر.",
-      "en": "Qatar: QatarEnergy November 2026 prices. Oman and Kuwait come from comparison sites (ksaexpats, miqatona) and an Al-Eqtisadiyah post for November, less well documented than Bahrain, the UAE and Qatar." },
-    { "ar": "أسعار الصرف بتاريخ 13 نوفمبر 2026. الدينار البحريني والريال السعودي والدرهم والريال القطري والريال العماني مربوطة بالدولار. اليورو والإسترليني والين واليوان والفرنك والدولار الكندي والأسترالي والروبية الهندية من أسعار السوق (x-rates وTradingEconomics). الدينار الكويتي والروبية الباكستانية والجنيه المصري تقريبية (علامة ≈).",
-      "en": "Exchange rates as of 13 Nov 2026. BHD, SAR, AED, QAR and OMR are pegged to the US dollar. EUR, GBP, JPY, CNY, CHF, CAD, AUD and INR come from market quotes (x-rates, TradingEconomics). KWD, PKR and EGP are approximate (marked ≈)." }
+    { "ar": "البحرين: أسعار لجنة تحديد ومراقبة أسعار الوقود لشهر نوفمبر 2026 (البداية من 2 نوفمبر): 91: 235 فلس، 95: 277 فلس، 98: 410 فلس.",
+      "en": "Bahrain: Fuel Pricing Committee prices for November 2026 (effective 2 Nov): 91: 235 fils, 95: 277 fils, 98: 410 fils." },
+    { "ar": "السعودية: أسعار نوفمبر 2026: 91: 2.18 ر.س، 95: 2.33 ر.س، 98: 5.33 ر.س (سعر 98 ارتفع في 11 أكتوبر 2026).",
+      "en": "Saudi Arabia: November 2026 prices: 91: SAR 2.18, 95: SAR 2.33, 98: SAR 5.33 (98 was raised on 11 Oct 2026)." },
+    { "ar": "الإمارات: أسعار نوفمبر 2026 شاملة الضريبة: 91: 3.97 د.إ، 95: 4.04 د.إ، 98: 4.16 د.إ.",
+      "en": "UAE: November 2026 prices incl. VAT: 91: AED 3.97, 95: AED 4.04, 98: AED 4.16." },
+    { "ar": "قطر: أسعار نوفمبر 2026: 91: 1.95 ر.ق، 95: 2.10 ر.ق. لا يتوفر سعر معلن لبنزين 98.",
+      "en": "Qatar: November 2026 prices: 91: QAR 1.95, 95: QAR 2.10. No published price for 98." },
+    { "ar": "عُمان: أسعار نوفمبر 2026: 91: 0.229 ر.ع، 95: 0.239 ر.ع، 98 (Ultimax): 0.399 ر.ع.",
+      "en": "Oman: November 2026 prices: 91: OMR 0.229, 95: OMR 0.239, 98 (Ultimax): OMR 0.399." },
+    { "ar": "الكويت: أسعار نوفمبر 2026: 91: 85 فلس، 95: 105 فلس، 98 (ألترا): 275 فلس.",
+      "en": "Kuwait: November 2026 prices: 91: 85 fils, 95: 105 fils, 98 (Ultra): 275 fils." },
+    { "ar": "أسعار الصرف بتاريخ 13 نوفمبر 2026. العملات الخليجية مربوطة بالدولار. بعض العملات العالمية تقريبية (علامة ≈).",
+      "en": "Exchange rates as of 13 Nov 2026. Gulf currencies are pegged to USD. Some world currencies are approximate (marked ≈)." }
   ]
 }
