@@ -34,6 +34,9 @@ select{font:700 14px 'Cairo',sans-serif;color:var(--ink);background:var(--card);
 .fuel .n{font-size:12px;color:var(--mut);margin-top:2px}
 .fuel .p{font-size:14px;font-weight:800;margin-top:8px}
 .fuel.on{border-color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent);box-shadow:0 10px 30px color-mix(in srgb,var(--c) 30%,transparent)}
+.spark{display:block;margin:4px auto 0;color:var(--mut);opacity:.7}
+.trend{font-size:11px;margin-inline-start:2px}
+.trend-up{color:#dc2626}.trend-down{color:#16a34a}.trend-flat{color:var(--mut)}
 .note{font-size:12px;color:var(--mut);margin:10px 2px 0;line-height:1.7}
 .note button{all:unset;cursor:pointer;color:var(--acc);font-weight:800;text-decoration:underline;margin-inline-start:6px}
 .note summary{cursor:pointer;font-weight:700}
@@ -46,6 +49,8 @@ label{display:block;font-size:13px;color:var(--mut);margin-bottom:6px;font-weigh
 .in input{all:unset;box-sizing:border-box;flex:1 1 0;width:100%;min-width:0;padding:12px 0;font:800 20px 'Cairo',sans-serif;color:var(--ink);direction:ltr;text-align:right}
 .in input.txt{direction:inherit;text-align:start;font-size:17px}
 .in span{flex:none;color:var(--mut);font-size:13px;margin-inline-start:8px}
+.pencil{all:unset;box-sizing:border-box;cursor:pointer;flex:none;width:26px;height:26px;display:grid;place-items:center;border-radius:8px;font-size:13px;color:var(--mut);margin-inline-start:4px;transition:background .15s,color .15s}
+.pencil:hover{background:var(--track);color:var(--ink)}
 .full{grid-column:1/-1}
 input[type=range]{display:block;width:100%;min-width:0;accent-color:var(--acc);height:28px;margin:8px 0 0}
 .q{all:unset;cursor:pointer;display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--acc);color:#fff;font-size:12px;font-weight:900;margin-inline-start:4px;vertical-align:middle}
@@ -92,10 +97,11 @@ input[type=range]{display:block;width:100%;min-width:0;accent-color:var(--acc);h
 .tip{position:absolute;top:0;left:0;pointer-events:none;background:var(--ink);color:var(--bg1);padding:8px 10px;border-radius:12px;font-size:12px;line-height:1.7;min-width:150px;opacity:0;transition:opacity .15s;z-index:5}
 .tip b{font-size:13px}
 .tbl{width:100%;border-collapse:collapse;font-size:13px}
-.tbl th,.tbl td{padding:8px 6px;text-align:center;border-bottom:1px solid var(--line)}
+.tbl th,.tbl td{padding:8px 6px;text-align:center;border-bottom:1px solid var(--line);vertical-align:middle}
 .tbl th:first-child,.tbl td:first-child{text-align:start}
 .tbl tr.me td{font-weight:800;background:color-mix(in srgb,var(--acc) 12%,transparent)}
 .tbl td.u{color:var(--mut);font-size:11px;border:0;text-align:start}
+.tbl .dt{display:block;color:var(--mut);font-size:10px;font-weight:600;margin-top:2px;line-height:1.4}
 .chips{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
 .chip{border:1.5px solid var(--acc);border-radius:14px;padding:10px 12px;font-size:13px;line-height:1.7;background:color-mix(in srgb,var(--acc) 8%,transparent)}
 .chip b{display:block;font-size:15px}
@@ -113,6 +119,18 @@ input[type=range]{display:block;width:100%;min-width:0;accent-color:var(--acc);h
 .toast.on{opacity:1;transform:translate(-50%,0)}
 footer{text-align:center;color:var(--mut);font-size:12px;margin-top:18px;line-height:1.8}
 #rep{position:fixed;left:-10000px;top:0;width:794px;height:1123px;overflow:hidden;background:#fff;color:#14213d;font-family:'Cairo',system-ui,sans-serif;display:flex;flex-direction:column}
+/* Modal */
+.modal{position:fixed;inset:0;z-index:30;display:grid;place-items:center;padding:20px}
+.modal[hidden]{display:none}
+.modal-bg{position:absolute;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.modal-box{position:relative;width:100%;max-width:400px;background:var(--card);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.modal-box h3{margin:0 0 6px;font-size:17px;font-weight:900}
+.modal-box .note{margin:0 0 4px}
+.modal-box .in{margin:12px 0}
+.modal-box .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.modal-box .row .btn{flex:1 1 auto;padding:12px 10px;font-size:14px}
+.modal-box .row .mini{padding:11px 12px;border-radius:12px;font-size:12px}
+.modal-off{font-size:12px;color:var(--mut);margin:4px 0 0;text-align:center}
 </style>
 </head>
 <body>
@@ -138,7 +156,13 @@ footer{text-align:center;color:var(--mut);font-size:12px;margin-top:18px;line-he
   <div class="card">
     <div class="grid">
       <div class="full"><label data-i18n="car"></label><div class="in"><input id="car" class="txt" type="text" list="cars" maxlength="30" data-ph="carPh"><datalist id="cars"></datalist></div></div>
-      <div><label data-i18n="price"></label><div class="in"><input id="price" type="number" step="0.001" inputmode="decimal"><span id="uPrice">BHD</span></div></div>
+      <div class="full"><label data-i18n="price"></label>
+        <div class="in">
+          <input id="price" type="number" step="0.001" inputmode="decimal">
+          <span id="uPrice">BHD</span>
+          <button class="pencil" id="priceEdit" type="button" aria-label="edit" data-i18n-title="modalTitle">✎</button>
+        </div>
+      </div>
       <div><label><span data-i18n="tank"></span><button type="button" class="q" id="qbtn" aria-label="help">?</button></label><div class="in"><input id="tank" type="number" value="60" inputmode="decimal"><span data-i18n="L"></span></div></div>
       <div class="full help" id="help" hidden><b data-i18n="helpH"></b><ol id="helpL"></ol></div>
       <div class="full"><label data-i18n="dist"></label><div class="in"><input id="dist" type="number" value="166" inputmode="decimal"><span data-i18n="km"></span></div></div>
@@ -214,6 +238,25 @@ footer{text-align:center;color:var(--mut);font-size:12px;margin-top:18px;line-he
 <div class="toast" id="toast"></div>
 <div id="rep"></div>
 
+<!-- Custom Price Modal -->
+<div class="modal" id="priceModal" hidden>
+  <div class="modal-bg" id="mpBg"></div>
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="mpTitle">
+    <h3 id="mpTitle" data-i18n="modalTitle"></h3>
+    <p class="note" data-i18n="modalNote"></p>
+    <div class="in">
+      <input id="mpInput" type="number" step="0.001" inputmode="decimal">
+      <span id="mpUnit">BHD</span>
+    </div>
+    <p class="modal-off"><span data-i18n="officialIs"></span>: <b id="mpCurrent">—</b></p>
+    <div class="row">
+      <button class="btn" id="mpSave" type="button" data-i18n="modalSave"></button>
+      <button class="mini" id="mpReset" type="button" data-i18n="resetOfficial"></button>
+      <button class="mini" id="mpCancel" type="button" data-i18n="modalCancel"></button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ============ أدوات ============ */
 const $=id=>document.getElementById(id);
@@ -240,10 +283,12 @@ ar:{title:'حاسبة البنزين',sub:'مملكة البحرين',fuelType:'
  log:'📋 سجل المشاوير',empty:'لا توجد مشاوير محفوظة. احسب مشوارك ثم اضغط «حفظ في السجل».',clear:'مسح كل السجل',del:'🗑 حذف',avg:'متوسط',trips:'مشوار',
  need:'أدخل المسافة والمؤشرات أولاً',saved:'تم الحفظ في السجل ✓',making:'جارٍ إنشاء PDF…',pdfFail:'تعذّر إنشاء PDF، حاول مرة أخرى',confirmClear:'مسح كل السجل؟',
  src:'المصدر',srcFail:'تعذّرت قراءة prices.json، استُخدمت بيانات مدمجة محدودة',upd:'آخر تحديث للبيانات',manualFor:'سعر يدوي محفوظ في متصفحك لبنزين',resetOfficial:'إعادة السعر الرسمي',
- foot:'الحسابات تقديرية. السجل محفوظ في متصفح هذا الجهاز فقط.',grpG:'الخليج',grpW:'العالم',curApprox:'سعر الصرف تقريبي',
+ foot:'الحسابات تقديرية. السجل محفوظ في متصفح هذا الجهاز فقط.',grpG:'الخليج',grpW:'العالم',curApprox:'سعر الصرف الحالي تقريبي',
  rTitle:'تقرير تكلفة الوقود',rTrip:'تفاصيل المشوار',rFuel:'بنزين',rPer:'للتر',rEq:'ما يعادل بالدينار البحريني',rGauge:'مستوى الخزان بعد المشوار',
  rDisc:'الحسابات تقديرية وتعتمد على المدخلات. أسعار البحرين من لجنة تحديد ومراقبة أسعار الوقود، وأسعار دول الخليج من مصادر منشورة، وأسعار الصرف بتاريخ تحديث البيانات وبعضها تقريبي.',
- trendUp:'ارتفاع',trendDown:'انخفاض',trendFlat:'ثبات'},
+ trendUp:'ارتفاع',trendDown:'انخفاض',trendFlat:'ثبات',
+ modalTitle:'تعديل سعر اللتر يدوياً',modalNote:'سيُحفظ السعر في متصفح هذا الجهاز فقط، ويمكنك استعادة السعر الرسمي في أي وقت.',modalSave:'حفظ السعر',modalCancel:'إلغاء',officialIs:'السعر الرسمي',
+ notAvail:'غير متوفر',ratesNote:'أسعار الصرف بتاريخ'},
 en:{title:'Fuel Calculator',sub:'Kingdom of Bahrain',fuelType:'Fuel type',g91:'Jayyid',g95:'Mumtaz',g98:'Super',fils:'fils',
  car:'Car name',carPh:'e.g. Camry V6',price:'Manual price per litre',tank:'Tank capacity',L:'L',dist:'Distance driven',km:'km',
  before:'Gauge before',after:'Gauge after',filled:'Optional: litres refilled after the trip (for accuracy)',
@@ -256,10 +301,12 @@ en:{title:'Fuel Calculator',sub:'Kingdom of Bahrain',fuelType:'Fuel type',g91:'J
  log:'📋 Trip log',empty:'No saved trips yet. Calculate a trip, then tap “Save to log”.',clear:'Clear whole log',del:'🗑 Delete',avg:'avg',trips:'trips',
  need:'Enter distance and gauges first',saved:'Saved to log ✓',making:'Creating PDF…',pdfFail:'Could not create the PDF, please try again',confirmClear:'Clear the whole log?',
  src:'Source',srcFail:'Could not read prices.json, limited built-in data used',upd:'Data updated',manualFor:'Manual price saved in your browser for',resetOfficial:'Restore official price',
- foot:'Estimates only. The log is stored in this device’s browser only.',grpG:'Gulf',grpW:'World',curApprox:'Exchange rate is approximate',
+ foot:'Estimates only. The log is stored in this device’s browser only.',grpG:'Gulf',grpW:'World',curApprox:'Current exchange rate is approximate',
  rTitle:'Fuel Cost Report',rTrip:'Trip details',rFuel:'Petrol',rPer:'per litre',rEq:'Equivalent in Bahraini dinar',rGauge:'Tank level after the trip',
  rDisc:'Estimates based on the inputs. Bahrain prices come from the Fuel Pricing Committee, other Gulf prices from published sources, exchange rates as of the data date and some are approximate.',
- trendUp:'Up',trendDown:'Down',trendFlat:'Flat'}
+ trendUp:'Up',trendDown:'Down',trendFlat:'Flat',
+ modalTitle:'Edit price per litre manually',modalNote:'The price will be saved in this device’s browser only. You can restore the official price anytime.',modalSave:'Save price',modalCancel:'Cancel',officialIs:'Official price',
+ notAvail:'N/A',ratesNote:'Exchange rates as of'}
 };
 let lang=LS.get('lang','ar'),cur=LS.get('cur','BHD');
 const t=k=>(I[lang][k]!=null?I[lang][k]:I.ar[k]!=null?I.ar[k]:k);
@@ -278,11 +325,39 @@ const unit=c=>{const i=cinfo(c);return lang==='ar'&&i&&i.sym_ar?i.sym_ar:c};
 const cc=bhd=>fmt(conv(bhd,'BHD',cur),cur);
 const offP=g=>{const H=D.bahrain.history;return H[H.length-1]['p'+g]};
 
+/* ============ تنسيق التاريخ ============ */
+const MONTHS_AR=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const MONTHS_EN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function fmtDate(d){
+  if(!d)return'';
+  const m=String(d).match(/^(\d{4})-(\d{2})(?:-(\d{2}))?/);
+  if(!m)return d;
+  const mi=parseInt(m[2])-1;
+  if(mi<0||mi>11)return d;
+  if(lang==='ar')return m[3]?`${parseInt(m[3])} ${MONTHS_AR[mi]}`:MONTHS_AR[mi];
+  return m[3]?`${MONTHS_EN[mi]} ${m[3]}`:MONTHS_EN[mi];
+}
+
 /* ============ التخزين ============ */
 const getManual=()=>LS.get('manualPrices',{});
 const setManual=m=>LS.set('manualPrices',m);
 const getLog=()=>LS.get('fuelLog',[]);
 const setLog=l=>LS.set('fuelLog',l);
+
+/* ============ Sparkline ============ */
+function sparkline(g){
+  const all=D.bahrain.history.filter(x=>x['p'+g]!=null);
+  if(all.length<2)return'';
+  const H=all.slice(-6).map(x=>x['p'+g]);
+  const w=76,h=18,pad=2;
+  const mn=Math.min(...H),mx=Math.max(...H),sp=(mx-mn)||0.001;
+  const X=i=>pad+i/(H.length-1)*(w-2*pad);
+  const Y=v=>h-pad-(v-mn)/sp*(h-2*pad);
+  let d='M'+X(0).toFixed(1)+' '+Y(H[0]).toFixed(1);
+  for(let i=1;i<H.length;i++)d+=' L'+X(i).toFixed(1)+' '+Y(H[i]).toFixed(1);
+  const lx=X(H.length-1).toFixed(1),ly=Y(H[H.length-1]).toFixed(1);
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true"><path d="${d}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${lx}" cy="${ly}" r="2.2" fill="currentColor"/></svg>`;
+}
 
 /* ============ أنواع البنزين ============ */
 const FUELS=[{g:91,c:'#16a34a'},{g:95,c:'#e11d48'},{g:98,c:'#7c3aed'}];
@@ -290,9 +365,9 @@ let cf=FUELS[0],R={},chartCtx=null;
 FUELS.forEach(f=>{
   const b=document.createElement('button');
   b.className='fuel';b.style.setProperty('--c',f.c);
-  b.innerHTML='<div class="g">'+f.g+'</div><div class="n"></div><div class="p"></div>';
+  b.innerHTML='<div class="g">'+f.g+'</div><div class="n"></div><div class="p"></div><div class="sp"></div>';
   b.onclick=()=>pick(f);
-  f.el=b;f.nEl=b.querySelector('.n');f.pEl=b.querySelector('.p');$('fuels').appendChild(b);
+  f.el=b;f.nEl=b.querySelector('.n');f.pEl=b.querySelector('.p');f.sEl=b.querySelector('.sp');$('fuels').appendChild(b);
 });
 function cardTxt(v){return cur==='BHD'?Math.round(v*1000)+' '+t('fils'):cc(v)+' '+unit(cur)}
 function trend(g){
@@ -311,6 +386,7 @@ function renderCards(){
     const tr=trend(f.g);
     f.nEl.textContent=t('g'+f.g);
     f.pEl.innerHTML=cardTxt(v)+(m[f.g]!=null?' ✎':'')+' <span class="trend '+tr.cls+'">'+tr.icon+'</span>';
+    f.sEl.innerHTML=sparkline(f.g);
   });
 }
 function renderSrc(){
@@ -349,12 +425,19 @@ function buildCurrencySelect(){
   });
   if(!cinfo(cur))cur='BHD';
   s.value=cur;
-  const i=cinfo(cur);$('cnote').textContent=i&&i.kind==='approx'?t('curApprox'):'';
+  updateCurNote();
+}
+function updateCurNote(){
+  const i=cinfo(cur);
+  let note=t('ratesNote')+': '+D.updated;
+  if(i&&i.kind==='approx')note+=' · '+t('curApprox');
+  $('cnote').textContent=note;
 }
 $('cur').onchange=()=>{
   cur=$('cur').value;LS.set('cur',cur);
-  const i=cinfo(cur);$('cnote').textContent=i&&i.kind==='approx'?t('curApprox'):'';
+  updateCurNote();
   updatePriceLabel();
+  if(!$('priceModal').hidden)openPriceModal();
   renderCards();renderChart();renderGcc();renderLog();calc();
 };
 
@@ -364,6 +447,40 @@ function updatePriceLabel(){
   if(el)el.textContent=t('price')+' ('+unit(cur)+')';
   const u=$('uPrice');if(u)u.textContent=unit(cur);
 }
+
+/* ============ Modal السعر المخصص ============ */
+function openPriceModal(){
+  const m=getManual();
+  const current=m[cf.g]!=null?m[cf.g]:offP(cf.g);
+  $('mpInput').value=current.toFixed(3);
+  $('mpUnit').textContent=unit(cur);
+  $('mpCurrent').textContent=cardTxt(offP(cf.g));
+  $('priceModal').hidden=false;
+  setTimeout(()=>$('mpInput').focus(),50);
+}
+function closePriceModal(){$('priceModal').hidden=true}
+$('priceEdit').onclick=openPriceModal;
+$('mpBg').onclick=closePriceModal;
+$('mpCancel').onclick=closePriceModal;
+$('mpSave').onclick=()=>{
+  const v=parseFloat($('mpInput').value);
+  if(!(v>0))return;
+  const m=getManual();
+  if(Math.abs(v-offP(cf.g))>0.0004)m[cf.g]=v;else delete m[cf.g];
+  setManual(m);
+  $('price').value=v.toFixed(3);
+  renderCards();renderSrc();calc();
+  closePriceModal();
+  toast(t('saved'));
+};
+$('mpReset').onclick=()=>{
+  const m=getManual();delete m[cf.g];setManual(m);
+  $('price').value=offP(cf.g).toFixed(3);
+  renderCards();renderSrc();calc();
+  closePriceModal();
+  toast(t('resetOfficial'));
+};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('priceModal').hidden)closePriceModal()});
 
 /* ============ المؤشران ============ */
 function link(nid,rid){
@@ -477,7 +594,9 @@ function renderGcc(){
   if(!D.gcc.length){T.innerHTML='<tr><td>'+esc(t('noData'))+'</td></tr>';$('srcL').innerHTML='';return}
   let h='<tr><th>'+esc(t('ctry'))+'</th><th>91</th><th>95</th><th>98</th></tr>';
   gccRows().forEach(r=>{
-    h+='<tr'+(r.c.id==='BH'?' class="me"':'')+'><td>'+esc(r.c[lang]||r.c.en)+'</td>'+r.v.map(v=>'<td>'+(v==null?'—':fmt(v,cur))+'</td>').join('')+'</tr>';
+    const dt=r.c.date?'<small class="dt">'+esc(fmtDate(r.c.date))+'</small>':'';
+    h+='<tr'+(r.c.id==='BH'?' class="me"':'')+'><td>'+esc(r.c[lang]||r.c.en)+dt+'</td>'
+      +r.v.map(v=>'<td'+(v==null?' title="'+esc(t('notAvail'))+'"':'')+'>'+(v==null?'—':fmt(v,cur))+'</td>').join('')+'</tr>';
   });
   T.innerHTML=h+'<tr><td colspan="4" class="u">'+esc(unit(cur))+' / '+esc(t('L'))+'</td></tr>';
   $('srcL').innerHTML=(D.notes||[]).map(n=>'<li>'+esc(n[lang]||n.ar||'')+'</li>').join('');
@@ -541,7 +660,10 @@ function reportHTML(o){
   const ckmTxt=cur==='BHD'?cell(esc(t('ckm')),(ckm*1000).toFixed(1),esc(t('fils'))):cell(esc(t('ckm')),conv(ckm,'BHD',cur).toFixed(dec(cur)+1),esc(u));
   const perL=cur==='BHD'?Math.round(o.price*1000)+' '+t('fils'):cc(o.price)+' '+u;
   const ch=chartSVG(o.g,714,190,col,'r','#ffffff');
-  const rows=gccRows().map(r=>'<tr style="'+(r.c.id==='BH'?'background:'+col+'18;font-weight:800':'')+'"><td style="padding:3px 10px;text-align:start">'+esc(r.c[lang]||r.c.en)+'</td>'+r.v.map(v=>'<td style="padding:3px 10px;text-align:center">'+(v==null?'—':fmt(v,cur))+'</td>').join('')+'</tr>').join('');
+  const rows=gccRows().map(r=>{
+    const dt=r.c.date?'<small style="display:block;color:#5c6678;font-size:10px;font-weight:600">'+esc(fmtDate(r.c.date))+'</small>':'';
+    return '<tr style="'+(r.c.id==='BH'?'background:'+col+'18;font-weight:800':'')+'"><td style="padding:3px 10px;text-align:start">'+esc(r.c[lang]||r.c.en)+dt+'</td>'+r.v.map(v=>'<td style="padding:3px 10px;text-align:center">'+(v==null?'—':fmt(v,cur))+'</td>').join('')+'</tr>';
+  }).join('');
   const bar=lvl==null?'':'<div style="margin:0 40px 14px"><div style="font-size:12px;color:#5c6678;margin-bottom:5px">'+esc(t('rGauge'))+' · '+o.left.toFixed(1)+' '+esc(t('L'))+' ('+Math.round(lvl*100)+'%)</div><div style="height:16px;border-radius:9px;background:#e6ebf1;overflow:hidden"><div style="height:100%;width:'+Math.round(lvl*100)+'%;background:'+(lvl<.2?'#ef4444':lvl<.4?'#f59e0b':col)+';border-radius:9px"></div></div></div>';
   return ''
   +'<div style="background:linear-gradient(135deg,'+col+',#0b1220);color:#fff;padding:30px 40px 66px;flex:none">'
@@ -606,6 +728,7 @@ function applyLang(){
   document.title=t('title')+(lang==='ar'?' – البحرين':' – Bahrain');
   document.querySelectorAll('[data-i18n]').forEach(e=>e.textContent=t(e.dataset.i18n));
   document.querySelectorAll('[data-ph]').forEach(e=>e.placeholder=t(e.dataset.ph));
+  document.querySelectorAll('[data-i18n-title]').forEach(e=>e.title=t(e.dataset.i18nTitle));
   $('helpL').innerHTML=t('help').map(x=>'<li>'+x+'</li>').join('');
   $('lang').textContent=lang==='ar'?'EN':'ع';
   $('updL').textContent=t('upd')+': '+D.updated;
