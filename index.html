@@ -83,11 +83,15 @@ input[type=range]{display:block;width:100%;min-width:0;accent-color:var(--acc);h
 .cost .big{font-size:46px;font-weight:900;line-height:1.1;color:var(--acc);transition:color .4s}
 .cost .big i{font-style:normal;font-size:18px;color:var(--mut);margin-inline-start:6px;font-weight:600}
 .cost .fils{font-size:13px;color:var(--mut)}
-.actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-bottom:14px}
+.actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-bottom:8px}
 .btn{all:unset;box-sizing:border-box;cursor:pointer;text-align:center;padding:14px 8px;border-radius:16px;font:800 15px 'Cairo',sans-serif;color:#fff;background:var(--acc);transition:transform .15s,filter .15s}
 .btn:active{transform:scale(.97)}
 .btn:hover{filter:brightness(1.07)}
 .btn.pdf{background:#dc2626}
+.clear-row{text-align:center;margin:0 0 14px}
+.clear-btn{all:unset;box-sizing:border-box;cursor:pointer;font:800 13px 'Cairo',sans-serif;padding:8px 18px;border-radius:12px;border:1.5px solid var(--line);color:var(--mut);transition:background .15s,color .15s,border-color .15s}
+.clear-btn:hover{background:color-mix(in srgb,#ef4444 10%,transparent);color:#ef4444;border-color:rgba(239,68,68,.4)}
+.clear-btn:active{transform:scale(.98)}
 .edit-banner{background:color-mix(in srgb,var(--acc) 12%,transparent);border:1.5px dashed var(--acc);border-radius:14px;padding:10px 14px;font-size:13px;margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:var(--ink)}
 .edit-banner[hidden]{display:none}
 .edit-banner button{margin-inline-start:auto;font-size:12px;background:var(--card)}
@@ -123,6 +127,7 @@ input[type=range]{display:block;width:100%;min-width:0;accent-color:var(--acc);h
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);background:var(--ink);color:var(--bg1);padding:10px 18px;border-radius:14px;font-size:14px;font-weight:800;opacity:0;pointer-events:none;transition:.3s;z-index:20}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 footer{text-align:center;color:var(--mut);font-size:12px;margin-top:18px;line-height:1.8}
+.rights{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font-weight:900;color:var(--acc);font-size:13px;letter-spacing:.4px}
 #rep{position:fixed;left:-10000px;top:0;width:794px;height:1123px;overflow:hidden;background:#fff;color:#14213d;font-family:'Cairo',system-ui,sans-serif;display:flex;flex-direction:column}
 .modal{position:fixed;inset:0;z-index:30;display:grid;place-items:center;padding:20px}
 .modal[hidden]{display:none}
@@ -213,6 +218,9 @@ footer{text-align:center;color:var(--mut);font-size:12px;margin-top:18px;line-he
     <button class="btn" id="save" type="button" data-i18n="save"></button>
     <button class="btn pdf" id="pdf" type="button" data-i18n="pdf"></button>
   </div>
+  <div class="clear-row">
+    <button class="clear-btn" id="clearInputs" type="button" data-i18n="clearData"></button>
+  </div>
 
   <div class="stats">
     <div class="st"><small data-i18n="used"></small><b id="used">0</b><em data-i18n="L"></em></div>
@@ -242,7 +250,11 @@ footer{text-align:center;color:var(--mut);font-size:12px;margin-top:18px;line-he
     <p class="note"><button id="clear" type="button" data-i18n="clear"></button></p>
   </div>
 
-  <footer><span data-i18n="foot"></span><br><span id="updL"></span></footer>
+  <footer>
+    <span data-i18n="foot"></span><br>
+    <span id="updL"></span>
+    <div class="rights" data-i18n="rights"></div>
+  </footer>
 </div>
 <div class="toast" id="toast"></div>
 <div id="rep"></div>
@@ -298,7 +310,9 @@ ar:{title:'حاسبة البنزين',sub:'مملكة البحرين',fuelType:'
  modalTitle:'تعديل سعر اللتر يدوياً',modalNote:'سيُحفظ السعر في متصفح هذا الجهاز فقط، ويمكنك استعادة السعر الرسمي في أي وقت.',modalSave:'حفظ السعر',modalCancel:'إلغاء',officialIs:'السعر الرسمي',
  notAvail:'غير متوفر',ratesNote:'أسعار الصرف بتاريخ',
  edit:'✏️ تعديل',updateEntry:'💾 تحديث السجل',editingNote:'أنت في وضع التعديل على مشوار محفوظ',cancelEdit:'إلغاء التعديل',
- loadedForEdit:'تم تحميل المشوار للتعديل',updated:'تم تحديث السجل ✓',editCancelled:'تم إلغاء التعديل',cantLoad:'تعذّر تحميل المشوار (بيانات ناقصة)'},
+ loadedForEdit:'تم تحميل المشوار للتعديل',updated:'تم تحديث السجل ✓',editCancelled:'تم إلغاء التعديل',cantLoad:'تعذّر تحميل المشوار (بيانات ناقصة)',
+ clearData:'🔄 مسح البيانات',confirmClearData:'سيتم مسح جميع المدخلات والأسعار اليدوية، مع الحفاظ الكامل على سجل المشاوير. متابعة؟',dataCleared:'تم مسح البيانات، السجل محفوظ ✓',
+ rights:'جميع الحقوق محفوظة لـ Muharraqi'},
 en:{title:'Fuel Calculator',sub:'Kingdom of Bahrain',fuelType:'Fuel type',g91:'Jayyid',g95:'Mumtaz',g98:'Super',fils:'fils',
  car:'Car name',carPh:'e.g. Camry V6',price:'Manual price per litre',tank:'Tank capacity',L:'L',dist:'Distance driven',km:'km',
  before:'Gauge before',after:'Gauge after',filled:'Optional: litres refilled after the trip (for accuracy)',
@@ -318,7 +332,9 @@ en:{title:'Fuel Calculator',sub:'Kingdom of Bahrain',fuelType:'Fuel type',g91:'J
  modalTitle:'Edit price per litre manually',modalNote:'The price will be saved in this device’s browser only. You can restore the official price anytime.',modalSave:'Save price',modalCancel:'Cancel',officialIs:'Official price',
  notAvail:'N/A',ratesNote:'Exchange rates as of',
  edit:'✏️ Edit',updateEntry:'💾 Update log',editingNote:'You are editing a saved trip',cancelEdit:'Cancel edit',
- loadedForEdit:'Trip loaded for editing',updated:'Log updated ✓',editCancelled:'Edit cancelled',cantLoad:'Could not load trip (missing data)'}
+ loadedForEdit:'Trip loaded for editing',updated:'Log updated ✓',editCancelled:'Edit cancelled',cantLoad:'Could not load trip (missing data)',
+ clearData:'🔄 Clear data',confirmClearData:'This will clear all inputs and manual prices, while fully preserving the trip log. Continue?',dataCleared:'Data cleared, log preserved ✓',
+ rights:'All rights reserved to Muharraqi'}
 };
 let lang=LS.get('lang','ar'),cur=LS.get('cur','BHD');
 const t=k=>(I[lang][k]!=null?I[lang][k]:I.ar[k]!=null?I.ar[k]:k);
@@ -629,20 +645,14 @@ function updateSaveBtn(){
 function loadEntry(e){
   if(!e.tank||e.tank<=0){toast(t('cantLoad'));return}
   editId=e.id||null;
-  // car
   $('car').value=e.car||'';
   LS.set('lastCar',e.car||'');
-  // fuel type
   const f=FUELS.find(x=>x.g===e.g)||FUELS[0];
   pick(f);
-  // tank
   $('tank').value=e.tank;
   LS.set('lastTank',e.tank);
-  // distance
   $('dist').value=e.dist||0;
-  // price (set directly, no manual-save side effect)
   $('price').value=(e.price||0).toFixed(3);
-  // reconstruct before/after %
   let a=(e.left||0)/e.tank*100;
   let b=((e.left||0)+(e.used||0))/e.tank*100;
   a=Math.max(0,Math.min(100,a));
@@ -742,6 +752,32 @@ $('car').addEventListener('input',()=>{
 });
 $('tank').addEventListener('input',()=>LS.set('lastTank',num('tank')));
 $('qbtn').onclick=()=>{const h=$('help');h.hidden=!h.hidden};
+
+/* ============ مسح البيانات (مع الحفاظ على السجل) ============ */
+function clearAllData(){
+  if(!confirm(t('confirmClearData')))return;
+  // إلغاء وضع التعديل
+  editId=null;
+  updateSaveBtn();
+  // إعادة تعيين الحقول إلى القيم الافتراضية
+  $('car').value='';
+  $('tank').value='60';
+  $('dist').value='166';
+  $('nb').value='100';$('before').value='100';
+  $('na').value='70';$('after').value='70';
+  $('filled').value='';
+  // مسح الأسعار اليدوية
+  setManual({});
+  // مسح تفضيلات السيارة والخزان المحفوظة (مع الاحتفاظ بالسجل)
+  LS.set('lastCar','');
+  LS.set('lastTank',0);
+  // إعادة تحديد بنزين 91 (يُعيد جميع الرسوم والحسابات)
+  pick(FUELS[0]);
+  renderLog();
+  toast(t('dataCleared'));
+  try{window.scrollTo({top:0,behavior:'smooth'})}catch(_){window.scrollTo(0,0)}
+}
+$('clearInputs').onclick=clearAllData;
 
 /* ============ تقرير PDF ============ */
 function reportHTML(o){
