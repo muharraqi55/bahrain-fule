@@ -88,6 +88,9 @@ input[type=range]{display:block;width:100%;min-width:0;accent-color:var(--acc);h
 .btn:active{transform:scale(.97)}
 .btn:hover{filter:brightness(1.07)}
 .btn.pdf{background:#dc2626}
+.edit-banner{background:color-mix(in srgb,var(--acc) 12%,transparent);border:1.5px dashed var(--acc);border-radius:14px;padding:10px 14px;font-size:13px;margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:var(--ink)}
+.edit-banner[hidden]{display:none}
+.edit-banner button{margin-inline-start:auto;font-size:12px;background:var(--card)}
 .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:14px}
 .st{min-width:0;border:1px solid var(--line);border-radius:16px;padding:12px 14px}
 .st small{color:var(--mut);font-size:12px;display:block}
@@ -105,21 +108,22 @@ input[type=range]{display:block;width:100%;min-width:0;accent-color:var(--acc);h
 .chips{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
 .chip{border:1.5px solid var(--acc);border-radius:14px;padding:10px 12px;font-size:13px;line-height:1.7;background:color-mix(in srgb,var(--acc) 8%,transparent)}
 .chip b{display:block;font-size:15px}
-.entry{border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:10px}
+.entry{border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:10px;transition:border-color .2s,box-shadow .2s}
+.entry.editing{border-color:var(--acc);box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 25%,transparent)}
 .entry .top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
 .entry .top b{font-size:15px;overflow-wrap:anywhere}
 .entry .top small{color:var(--mut);font-size:12px;flex:none}
 .entry .ln{font-size:13px;color:var(--mut);margin:6px 0 10px;line-height:1.8}
 .entry .ln strong{color:var(--ink)}
-.entry .bt{display:flex;gap:8px}
-.mini{all:unset;cursor:pointer;font:800 12px 'Cairo',sans-serif;padding:7px 12px;border-radius:10px;border:1.5px solid var(--line);color:var(--ink)}
+.entry .bt{display:flex;gap:8px;flex-wrap:wrap}
+.mini{all:unset;cursor:pointer;font:800 12px 'Cairo',sans-serif;padding:7px 12px;border-radius:10px;border:1.5px solid var(--line);color:var(--ink);box-sizing:border-box}
 .mini.pdf{border-color:#dc2626;color:#dc2626}
+.mini.edit{border-color:var(--acc);color:var(--acc)}
 .mini.del{color:#ef4444;border-color:rgba(239,68,68,.4)}
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);background:var(--ink);color:var(--bg1);padding:10px 18px;border-radius:14px;font-size:14px;font-weight:800;opacity:0;pointer-events:none;transition:.3s;z-index:20}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 footer{text-align:center;color:var(--mut);font-size:12px;margin-top:18px;line-height:1.8}
 #rep{position:fixed;left:-10000px;top:0;width:794px;height:1123px;overflow:hidden;background:#fff;color:#14213d;font-family:'Cairo',system-ui,sans-serif;display:flex;flex-direction:column}
-/* Modal */
 .modal{position:fixed;inset:0;z-index:30;display:grid;place-items:center;padding:20px}
 .modal[hidden]{display:none}
 .modal-bg{position:absolute;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
@@ -200,6 +204,11 @@ footer{text-align:center;color:var(--mut);font-size:12px;margin-top:18px;line-he
     </div>
   </div>
 
+  <p class="edit-banner" id="editBanner" hidden>
+    <span>✏️ <span data-i18n="editingNote"></span></span>
+    <button type="button" class="mini" id="cancelEditBtn" data-i18n="cancelEdit"></button>
+  </p>
+
   <div class="actions">
     <button class="btn" id="save" type="button" data-i18n="save"></button>
     <button class="btn pdf" id="pdf" type="button" data-i18n="pdf"></button>
@@ -238,7 +247,6 @@ footer{text-align:center;color:var(--mut);font-size:12px;margin-top:18px;line-he
 <div class="toast" id="toast"></div>
 <div id="rep"></div>
 
-<!-- Custom Price Modal -->
 <div class="modal" id="priceModal" hidden>
   <div class="modal-bg" id="mpBg"></div>
   <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="mpTitle">
@@ -288,7 +296,9 @@ ar:{title:'حاسبة البنزين',sub:'مملكة البحرين',fuelType:'
  rDisc:'الحسابات تقديرية وتعتمد على المدخلات. أسعار البحرين من لجنة تحديد ومراقبة أسعار الوقود، وأسعار دول الخليج من مصادر منشورة، وأسعار الصرف بتاريخ تحديث البيانات وبعضها تقريبي.',
  trendUp:'ارتفاع',trendDown:'انخفاض',trendFlat:'ثبات',
  modalTitle:'تعديل سعر اللتر يدوياً',modalNote:'سيُحفظ السعر في متصفح هذا الجهاز فقط، ويمكنك استعادة السعر الرسمي في أي وقت.',modalSave:'حفظ السعر',modalCancel:'إلغاء',officialIs:'السعر الرسمي',
- notAvail:'غير متوفر',ratesNote:'أسعار الصرف بتاريخ'},
+ notAvail:'غير متوفر',ratesNote:'أسعار الصرف بتاريخ',
+ edit:'✏️ تعديل',updateEntry:'💾 تحديث السجل',editingNote:'أنت في وضع التعديل على مشوار محفوظ',cancelEdit:'إلغاء التعديل',
+ loadedForEdit:'تم تحميل المشوار للتعديل',updated:'تم تحديث السجل ✓',editCancelled:'تم إلغاء التعديل',cantLoad:'تعذّر تحميل المشوار (بيانات ناقصة)'},
 en:{title:'Fuel Calculator',sub:'Kingdom of Bahrain',fuelType:'Fuel type',g91:'Jayyid',g95:'Mumtaz',g98:'Super',fils:'fils',
  car:'Car name',carPh:'e.g. Camry V6',price:'Manual price per litre',tank:'Tank capacity',L:'L',dist:'Distance driven',km:'km',
  before:'Gauge before',after:'Gauge after',filled:'Optional: litres refilled after the trip (for accuracy)',
@@ -306,7 +316,9 @@ en:{title:'Fuel Calculator',sub:'Kingdom of Bahrain',fuelType:'Fuel type',g91:'J
  rDisc:'Estimates based on the inputs. Bahrain prices come from the Fuel Pricing Committee, other Gulf prices from published sources, exchange rates as of the data date and some are approximate.',
  trendUp:'Up',trendDown:'Down',trendFlat:'Flat',
  modalTitle:'Edit price per litre manually',modalNote:'The price will be saved in this device’s browser only. You can restore the official price anytime.',modalSave:'Save price',modalCancel:'Cancel',officialIs:'Official price',
- notAvail:'N/A',ratesNote:'Exchange rates as of'}
+ notAvail:'N/A',ratesNote:'Exchange rates as of',
+ edit:'✏️ Edit',updateEntry:'💾 Update log',editingNote:'You are editing a saved trip',cancelEdit:'Cancel edit',
+ loadedForEdit:'Trip loaded for editing',updated:'Log updated ✓',editCancelled:'Edit cancelled',cantLoad:'Could not load trip (missing data)'}
 };
 let lang=LS.get('lang','ar'),cur=LS.get('cur','BHD');
 const t=k=>(I[lang][k]!=null?I[lang][k]:I.ar[k]!=null?I.ar[k]:k);
@@ -316,6 +328,7 @@ let D={updated:'—',bahrain:{history:[{date:'2026-11-02',p91:0.235,p95:0.277,p9
  {code:'BHD',ar:'دينار بحريني',en:'Bahraini dinar',sym_ar:'د.ب',usd_per_unit:2.659574,group:'gulf',kind:'peg'},
  {code:'USD',ar:'دولار أمريكي',en:'US dollar',sym_ar:'$',usd_per_unit:1,group:'world',kind:'base'}]};
 let loaded=false;
+let editId=null;
 const cinfo=c=>D.currencies.find(x=>x.code===c);
 const rate=c=>(cinfo(c)||{}).usd_per_unit||0;
 const conv=(v,from,to)=>rate(to)?v*rate(from)/rate(to):v;
@@ -602,15 +615,82 @@ function renderGcc(){
   $('srcL').innerHTML=(D.notes||[]).map(n=>'<li>'+esc(n[lang]||n.ar||'')+'</li>').join('');
 }
 
-/* ============ السجل ============ */
+/* ============ السجل + التعديل ============ */
 const carName=()=>$('car').value.trim()||(lang==='ar'?'سيارتي':'My car');
 function el(tag,cls,txt){const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
+
+function updateSaveBtn(){
+  const btn=$('save');
+  if(btn)btn.textContent=editId?t('updateEntry'):t('save');
+  const banner=$('editBanner');
+  if(banner)banner.hidden=!editId;
+}
+
+function loadEntry(e){
+  if(!e.tank||e.tank<=0){toast(t('cantLoad'));return}
+  editId=e.id||null;
+  // car
+  $('car').value=e.car||'';
+  LS.set('lastCar',e.car||'');
+  // fuel type
+  const f=FUELS.find(x=>x.g===e.g)||FUELS[0];
+  pick(f);
+  // tank
+  $('tank').value=e.tank;
+  LS.set('lastTank',e.tank);
+  // distance
+  $('dist').value=e.dist||0;
+  // price (set directly, no manual-save side effect)
+  $('price').value=(e.price||0).toFixed(3);
+  // reconstruct before/after %
+  let a=(e.left||0)/e.tank*100;
+  let b=((e.left||0)+(e.used||0))/e.tank*100;
+  a=Math.max(0,Math.min(100,a));
+  b=Math.max(a,Math.min(100,b));
+  const aR=Math.round(a),bR=Math.round(b);
+  $('na').value=aR;$('after').value=aR;
+  $('nb').value=bR;$('before').value=bR;
+  $('filled').value='';
+  calc();
+  updateSaveBtn();
+  renderLog();
+  toast(t('loadedForEdit'));
+  try{window.scrollTo({top:0,behavior:'smooth'})}catch(_){window.scrollTo(0,0)}
+}
+
+function cancelEdit(){
+  editId=null;
+  updateSaveBtn();
+  renderLog();
+  toast(t('editCancelled'));
+}
+$('cancelEditBtn').onclick=cancelEdit;
+
 $('save').onclick=()=>{
   if(!(R.dist>0&&R.used>0)){toast(t('need'));return}
   const l=getLog();
-  l.unshift({id:Date.now(),car:carName(),date:new Date().toLocaleDateString('en-GB'),g:R.g,price:R.price,dist:R.dist,used:R.used,cost:R.cost,cons:R.cons,tank:R.tank,left:R.left});
-  setLog(l);renderLog();toast(t('saved'));
+  const entry={
+    id:editId||Date.now(),
+    car:carName(),
+    date:new Date().toLocaleDateString('en-GB'),
+    g:R.g,price:R.price,dist:R.dist,
+    used:R.used,cost:R.cost,cons:R.cons,
+    tank:R.tank,left:R.left
+  };
+  if(editId){
+    const idx=l.findIndex(x=>x.id===editId);
+    if(idx>=0){entry.date=l[idx].date;l[idx]=entry}
+    else l.unshift(entry);
+    editId=null;
+    setLog(l);renderLog();updateSaveBtn();
+    toast(t('updated'));
+  }else{
+    l.unshift(entry);
+    setLog(l);renderLog();
+    toast(t('saved'));
+  }
 };
+
 function renderLog(){
   const l=getLog(),u=unit(cur);
   const dl=$('cars');dl.innerHTML='';
@@ -627,21 +707,34 @@ function renderLog(){
   const lg=$('log');lg.innerHTML='';
   if(!l.length)lg.appendChild(el('p','note',t('empty')));
   l.forEach(e=>{
-    const row=el('div','entry'),top=el('div','top');
+    const row=el('div','entry');
+    if(editId===e.id)row.classList.add('editing');
+    const top=el('div','top');
     top.appendChild(el('b','','🚗 '+e.car));top.appendChild(el('small','',e.date));
     const ln=el('div','ln');
     ln.innerHTML=esc(t('rFuel'))+' <strong></strong> · <strong></strong> '+esc(t('km'))+' · <strong></strong> '+esc(t('L'))+' · <strong></strong> '+esc(u)+' · <strong></strong> '+esc(t('l100'));
     const st=ln.querySelectorAll('strong');
     st[0].textContent=e.g;st[1].textContent=(+e.dist).toFixed(0);st[2].textContent=e.used.toFixed(1);st[3].textContent=cc(e.cost);st[4].textContent=e.cons.toFixed(1);
     const bt=el('div','bt');
+    const ed=el('button','mini edit',t('edit'));ed.type='button';ed.onclick=()=>loadEntry(e);
     const p=el('button','mini pdf','📄 PDF');p.type='button';p.onclick=()=>makePDF(e);
-    const d=el('button','mini del',t('del'));d.type='button';d.onclick=()=>{setLog(getLog().filter(x=>x.id!==e.id));renderLog()};
-    bt.appendChild(p);bt.appendChild(d);
-    row.appendChild(top);row.appendChild(ln);row.appendChild(bt);lg.appendChild(row);
+    const d=el('button','mini del',t('del'));d.type='button';d.onclick=()=>{
+      if(editId===e.id){editId=null;updateSaveBtn()}
+      setLog(getLog().filter(x=>x.id!==e.id));renderLog();
+    };
+    bt.appendChild(ed);bt.appendChild(p);bt.appendChild(d);
+    row.appendChild(top);row.appendChild(ln);row.appendChild(bt);
+    lg.appendChild(row);
   });
   $('clear').style.display=l.length?'':'none';
 }
-$('clear').onclick=()=>{if(confirm(t('confirmClear'))){setLog([]);renderLog()}};
+$('clear').onclick=()=>{
+  if(confirm(t('confirmClear'))){
+    setLog([]);
+    editId=null;updateSaveBtn();
+    renderLog();
+  }
+};
 $('car').addEventListener('input',()=>{
   const n=$('car').value.trim();LS.set('lastCar',n);
   const hit=getLog().find(e=>e.car===n);
@@ -733,6 +826,7 @@ function applyLang(){
   $('lang').textContent=lang==='ar'?'EN':'ع';
   $('updL').textContent=t('upd')+': '+D.updated;
   buildCurrencySelect();updatePriceLabel();renderCards();renderSrc();renderChart();renderGcc();renderLog();calc();
+  updateSaveBtn();
 }
 $('lang').onclick=()=>{lang=lang==='ar'?'en':'ar';LS.set('lang',lang);applyLang()};
 
